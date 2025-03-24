@@ -13,7 +13,6 @@
 
 	let query: string = $state('');
 	let parsed_query: string = $derived(query.trim().toLocaleLowerCase());
-	let is_searching: boolean = $derived(parsed_query !== '');
 
 	const add_task = () => {
 		tasks.push(task);
