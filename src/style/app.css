@@ -94,3 +94,7 @@ button:active {
 	color: var(--text-light);
 	font-weight: bold;
 }
+
+.highlight {
+	color: var(--text-light);
+}

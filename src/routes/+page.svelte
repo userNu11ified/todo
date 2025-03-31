@@ -75,12 +75,18 @@
 			<div class="task-list">
 				{#each filtered_tasks as task, i}
 					<Task
-						{i}
-						{task}
 						on_task_up={() => move_task_up(i)}
 						on_task_down={() => move_task_down(i)}
 						on_task_delete={() => remove_task(i)}
-					></Task>
+					>
+						{#snippet index()}
+							Úkol číslo <span class="highlight">{i + 1}</span>:
+						{/snippet}
+
+						{#snippet task_text()}
+							{task}
+						{/snippet}
+					</Task>
 				{/each}
 			</div>
 		</div>
