@@ -3,6 +3,7 @@
 	import '../style/font.css';
 	import '../style/theme.css';
 	import '../style/app.css';
+	import Task from '../components/Task.svelte';
 
 	let tasks: string[] = $state([]);
 	let filtered_tasks: string[] = $derived(
@@ -73,17 +74,13 @@
 			<h2>Seznam úkolů</h2>
 			<div class="task-list">
 				{#each filtered_tasks as task, i}
-					<div class="task">
-						<div class="task-info">
-							<div class="index">Úkol číslo {i + 1}:</div>
-							<div class="task-text">{task}</div>
-						</div>
-						<div class="actions">
-							<button onclick={() => move_task_up(i)}>Nahoru</button>
-							<button onclick={() => move_task_down(i)}>Dolů</button>
-							<button onclick={() => remove_task(i)}>Vymazat</button>
-						</div>
-					</div>
+					<Task
+						{i}
+						{task}
+						on_task_up={() => move_task_up(i)}
+						on_task_down={() => move_task_down(i)}
+						on_task_delete={() => remove_task(i)}
+					></Task>
 				{/each}
 			</div>
 		</div>
