@@ -1,9 +1,10 @@
 import { db_create_task, db_delete_task, db_move_task_down, db_move_task_up } from '$lib/server/db';
+import { get } from 'svelte/store';
 import { DATABASE } from '../hooks.server';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-	return { tasks: DATABASE };
+	return { tasks: get(DATABASE) };
 };
 
 const CREATE_SUCCESS = 'Přidání úkolu proběhlo úspěšně!';
