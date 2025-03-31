@@ -4,21 +4,17 @@
 	import '../style/theme.css';
 	import '../style/app.css';
 	import Task from '../components/Task.svelte';
+	import type { PageProps } from './$types';
 
-	let tasks: string[] = $state([]);
-	let filtered_tasks: string[] = $derived(
-		tasks.filter((task) => task.toLocaleLowerCase().includes(parsed_query))
-	);
-
-	let task: string = $state('');
+	let { data, form }: PageProps = $props();
 
 	let query: string = $state('');
 	let parsed_query: string = $derived(query.trim().toLocaleLowerCase());
 
-	const add_task = () => {
-		tasks.push(task);
-		task = '';
-	};
+	let tasks: string[] = $state(data.tasks);
+	let filtered_tasks: string[] = $derived(
+		tasks.filter((task) => task.toLocaleLowerCase().includes(parsed_query))
+	);
 
 	const move_task_up = (i: number) => {
 		if (i === 0) return;
@@ -51,14 +47,20 @@
 	<h1>Seznam úkolů</h1>
 	<div class="layout">
 		<div class="left">
-			<section>
+			{#if form?.message}
+				<div class="form-message" class:success={form.success} class:error={!form.success}>
+					{form.message}
+				</div>
+			{/if}
+
+			<form action="?/create" method="POST">
 				<h2>Přidat úkol</h2>
 
 				<label for="task">Úkol</label>
-				<input type="text" id="task" bind:value={task} /> <br />
+				<input type="text" name="task" id="task" /> <br />
 
-				<button class="add-task" onclick={add_task}>Přidat úkol</button>
-			</section>
+				<button class="add-task">Přidat úkol</button>
+			</form>
 
 			<br />
 

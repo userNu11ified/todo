@@ -26,7 +26,8 @@ div {
 	gap: 128px;
 }
 
-section {
+section,
+.left form {
 	padding: 16px;
 	border: 2px solid var(--border-color);
 	border-radius: 16px;
@@ -97,4 +98,16 @@ button:active {
 
 .highlight {
 	color: var(--text-light);
+}
+
+.form-message {
+	margin-bottom: 8px;
+}
+
+.success {
+	color: rgb(94, 180, 83);
+}
+
+.error {
+	color: rgb(180, 83, 83);
 }
