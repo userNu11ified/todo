@@ -16,28 +16,6 @@
 		tasks.filter((task) => task.toLocaleLowerCase().includes(parsed_query))
 	);
 
-	const move_task_up = (i: number) => {
-		if (i === 0) return;
-
-		const new_index = i - 1;
-		const old_item = tasks[i];
-		tasks[i] = tasks[new_index];
-		tasks[new_index] = old_item;
-	};
-
-	const move_task_down = (i: number) => {
-		if (i === tasks.length - 1) return;
-
-		const new_index = i + 1;
-		const old_item = tasks[i];
-		tasks[i] = tasks[new_index];
-		tasks[new_index] = old_item;
-	};
-
-	const remove_task = (i: number) => {
-		tasks.splice(i, 1);
-	};
-
 	const reset_search = () => {
 		query = '';
 	};
@@ -76,17 +54,19 @@
 			<h2>Seznam úkolů</h2>
 			<div class="task-list">
 				{#each filtered_tasks as task, i}
-					<Task
-						on_task_up={() => move_task_up(i)}
-						on_task_down={() => move_task_down(i)}
-						on_task_delete={() => remove_task(i)}
-					>
+					<Task>
 						{#snippet index()}
 							Úkol číslo <span class="highlight">{i + 1}</span>:
 						{/snippet}
 
 						{#snippet task_text()}
 							{task}
+						{/snippet}
+
+						{#snippet actions()}
+							<button formaction={`/?/move_task_up&index=${i}`}>Nahoru</button>
+							<button formaction={`/?/move_task_down&index=${i}`}>Dolů</button>
+							<button formaction={`/?/delete_task&index=${i}`}>Vymazat</button>
 						{/snippet}
 					</Task>
 				{/each}

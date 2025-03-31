@@ -4,15 +4,11 @@
 	let {
 		index,
 		task_text,
-		on_task_up,
-		on_task_down,
-		on_task_delete
+		actions
 	}: {
 		index: Snippet;
 		task_text: Snippet;
-		on_task_up: () => void;
-		on_task_down: () => void;
-		on_task_delete: () => void;
+		actions: Snippet;
 	} = $props();
 </script>
 
@@ -21,9 +17,7 @@
 		<div class="index">{@render index()}</div>
 		<div class="task-text">{@render task_text()}</div>
 	</div>
-	<div class="actions">
-		<button onclick={on_task_up}>Nahoru</button>
-		<button onclick={on_task_down}>Dolů</button>
-		<button onclick={on_task_delete}>Vymazat</button>
-	</div>
+	<form class="actions" method="POST">
+		{@render actions()}
+	</form>
 </div>
