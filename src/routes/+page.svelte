@@ -3,16 +3,20 @@
 	import '../style/font.css';
 	import '../style/theme.css';
 	import '../style/app.css';
+	import Task from '../components/Task.svelte';
+	import type { PageProps } from './$types';
 
-	let tasks: string[] = $state([]);
+	let { data, form }: PageProps = $props();
+
+	let query: string = $state('');
+	let parsed_query: string = $derived(query.trim().toLocaleLowerCase());
+
+	let tasks: string[] = $state(data.tasks);
 	let filtered_tasks: string[] = $derived(
 		tasks.filter((task) => task.toLocaleLowerCase().includes(parsed_query))
 	);
 
 	let task: string = $state('');
-
-	let query: string = $state('');
-	let parsed_query: string = $derived(query.trim().toLocaleLowerCase());
 
 	const add_task = () => {
 		tasks.push(task);
@@ -20,15 +24,21 @@
 	};
 
 	const move_task_up = (i: number) => {
+		if (i === 0) return;
+
 		const new_index = i - 1;
-		const task_moved = tasks.splice(i, 1)[0];
-		tasks.splice(new_index, 0, task_moved);
+		const old_item = tasks[i];
+		tasks[i] = tasks[new_index];
+		tasks[new_index] = old_item;
 	};
 
 	const move_task_down = (i: number) => {
+		if (i === tasks.length - 1) return;
+
 		const new_index = i + 1;
-		const task_moved = tasks.splice(i, 1)[0];
-		tasks.splice(new_index, 0, task_moved);
+		const old_item = tasks[i];
+		tasks[i] = tasks[new_index];
+		tasks[new_index] = old_item;
 	};
 
 	const remove_task = (i: number) => {
@@ -40,18 +50,27 @@
 	};
 </script>
 
-<div class="app-mount">
+<div class="app-mount light-theme">
 	<h1>Seznam úkolů</h1>
 	<div class="layout">
 		<div class="left">
-			<section>
+			{#if form?.message}
+				<div class="form-message"
+					class:success={form.success}
+					class:error={!form.success}
+				>
+					{form.message}
+				</div>
+			{/if}
+
+			<form action="?/create_task" method="POST">
 				<h2>Přidat úkol</h2>
 
 				<label for="task">Úkol</label>
-				<input type="text" id="task" bind:value={task} /> <br />
+				<input type="text" name="task" id="task" /> <br />
 
-				<button class="add-task" onclick={add_task}>Přidat úkol</button>
-			</section>
+				<button class="add-task">Přidat úkol</button>
+			</form>
 
 			<br />
 
@@ -67,17 +86,21 @@
 			<h2>Seznam úkolů</h2>
 			<div class="task-list">
 				{#each filtered_tasks as task, i}
-					<div class="task">
-						<div class="task-info">
-							<div class="index">Úkol číslo {i + 1}:</div>
-							<div class="task-text">{task}</div>
-						</div>
-						<div class="actions">
-							<button onclick={() => move_task_up(i)}>Nahoru</button>
-							<button onclick={() => move_task_down(i)}>Dolů</button>
-							<button onclick={() => remove_task(i)}>Vymazat</button>
-						</div>
-					</div>
+					<Task>
+						{#snippet index()}
+							Úkol číslo <span class="highlight">{i + 1}</span>:
+						{/snippet}
+
+						{#snippet task_name()}
+							{task}
+						{/snippet}
+
+						{#snippet actions()}
+							<button formaction={`/?/move_task_up&index=${i}`}>Nahoru</button>
+							<button formaction={`/?/move_task_down&index=${i}`}>Dolů</button>
+							<button formaction={`/?/remove_task&index=${i}`}>Vymazat</button>
+						{/snippet}
+					</Task>
 				{/each}
 			</div>
 		</div>
